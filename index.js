@@ -73,6 +73,8 @@ const RX_USER_MONEY_SENT = /\d*\|Trans ID: (\w|\d){8}.\d{4}.(\w|\d){6}. Dear Cus
 const RX_USER_MONEY_RECEIVED = /Transaction ID: (\w|\d){8}.\d{4}.(\w|\d){6}:Vous avez recu \d*.\d{4} \w{3} a partir de (\w|\d){10}, (\w|\s)*. votre nouveau solde est \d*.\d{4} \w{3}.Cout:\d*.\d{4}\w{3}/;
 const RX_USER_MONEY_CHECK = /Votre solde disponible est de \d*.\d{4} \w{3}./;
 
+const RX_DUMMY_TEST = /dummy test/;
+
 
 
 class SMSParser {
@@ -95,7 +97,8 @@ class SMSParser {
         USER_MONEY_SENT : 'USER_MONEY_SENT',
         USER_MONEY_RECEIVED : 'USER_MONEY_RECEIVED',
         USER_MONEY_CHECK : 'USER_MONEY_CHECK',
-        NO_TYPE : 'NO_TYPE'
+        NO_TYPE : 'NO_TYPE',
+        DUMMY_TYPE : 'DUMMY_TYPE'
 
     };
 
@@ -111,7 +114,7 @@ class SMSParser {
         const isUserMoneyReceived = (JSON.stringify(this.parseSMSUserMoneyReceived(sms)) === 'null') === false;
         const isUserMoneyCheck = (JSON.stringify(this.parseSMSUserMoneyCheck(sms)) === 'null') === false;
 
-
+        const isDummyType = (JSON.stringify(this.parseDummyType(sms)) === 'null') === false;
         
 
        if(isAdminMoneySent === true){
@@ -136,6 +139,10 @@ class SMSParser {
 
         if(isUserMoneyCheck === true){
             return SMSParser.SMS_TYPE.USER_MONEY_CHECK;
+        }
+
+        if(isDummyType === true){
+            return SMSParser.SMS_TYPE.DUMMY_TYPE;
         }
 
        return SMSParser.SMS_TYPE.NO_TYPE;
@@ -409,6 +416,7 @@ class SMSParser {
         return (data);
     }
 
+
     parseSMSUserMoneyCheck(sms){
 
         const test =  RX_USER_MONEY_CHECK.test(sms);
@@ -430,6 +438,22 @@ class SMSParser {
         const data = {
             solde:solde,
             currency:currency,
+            type: SMSParser.SMS_TYPE.USER_MONEY_CHECK
+        }
+
+        return data;
+    }
+
+    parseDummyType(sms){
+        const test =  RX_DUMMY_TEST.test(sms);
+
+        if(test === false) {
+            console.error('This sms is not of type of RX_DUMMY_TEST ' );
+            return null;
+        }
+
+        const data = {
+            
             type: SMSParser.SMS_TYPE.USER_MONEY_CHECK
         }
 
