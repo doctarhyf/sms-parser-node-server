@@ -145,6 +145,8 @@ class SMSParser {
             return SMSParser.SMS_TYPE.DUMMY_TYPE;
         }
 
+
+
        return SMSParser.SMS_TYPE.NO_TYPE;
     }
 
@@ -454,7 +456,7 @@ class SMSParser {
 
         const data = {
             
-            type: SMSParser.SMS_TYPE.USER_MONEY_CHECK
+            type: SMSParser.SMS_TYPE.DUMMY_TYPE
         }
 
         return data;
@@ -491,6 +493,10 @@ class SMSParser {
 
         if(smsType === SMSParser.SMS_TYPE.USER_MONEY_CHECK){
             data = this.parseSMSUserMoneyCheck(sms);
+        }
+
+        if(smsType == SMSParser.SMS_TYPE.DUMMY_TYPE){
+            data = this.parseDummyType(sms);
         }
 
         if(data === null){
