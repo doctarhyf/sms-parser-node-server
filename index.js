@@ -2,18 +2,14 @@ const express = require('express');
 const app = express();
 const port = 8080;
 
+var ip = require("ip");
+//console.dir ( 'current ip ' + ip.address() );
+
 
 app.use(express.json());
 
 
-/*
-app.get('/tshirt', (req, res) => {
-    res.status(200).send({
-        tshirt:'cool',
-        size:'large'
-    })
-});
-*/
+
 
 
 app.post('/parseSMS/', (req, res) => {
@@ -40,31 +36,16 @@ app.post('/parseSMS/', (req, res) => {
     }
 });
 
-/*
-app.post('/tshirt/:id', (req, res) => {
-    const { id } = req.params;
-    const { logo, sms } = req.body;
 
-    console.log('req.parms -> ' + JSON.stringify(req.params));
-    console.log('req.body -> ' + JSON.stringify(req.body));
-
-    if(!logo) {
-        res.status(418).send('We need a logo!');
-    }else{
-        res.status(200).send({
-            tshirt:`👕 with your ${logo} and ID of ${id}`,
-            sms:`${sms}`
-        })
-    }
-});
-*/
 
 app.listen(
     port,
     () => {
-        console.log(`It's live on http://localhost:${port}`);
+        console.dir(`It's live on http://${ip.address()}:${port}`);
     }
 );
+
+
 
 
 // SMS PARSING -----
