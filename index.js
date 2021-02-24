@@ -87,7 +87,7 @@ const RX_ADMIN_MONEY_RECEIVED = /Trans. ID: (\w|\d){8}.\d{4}.(\w|\d){6}. Vous av
 const RX_ADMIN_MONEY_CHECK = /Txn. ID : (\w|\d){8}.\d{4}.(\w|\d){6}. Vous avez actuellement  \d*.\d{4}  \w{3} disponible sur votre compte courant. Et \d*.\d{4} \w{3} sur votre compte commissions ./i;
 
 const RX_USER_MONEY_SENT = /\d{4}\|Trans ID: (\w|\d){8}.\d{4}.(\w|\d){6}. Dear Customer. You have sent USD 1.0000 to 975886099 ALBERT OMBA SHENYEMA. Your available balance is USD 5.2960./i;
-const RX_USER_MONEY_RECEIVED = /Transaction ID: .{8}\.\d{4}\..{6}:Vous avez recu 1.0000 USD a partir de ALBER908LK, ALBERT OMBA SHENYEMA. votre nouveau solde est 6.4960 USD.Cout:0.0000USD/i;
+const RX_USER_MONEY_RECEIVED = /Transaction ID: .{8}\.\d{4}\..{6}:Vous avez recu \d+\.\d{4} \w{3} a partir de [A-Z0-9]{10}, (\w|\s)+\. votre nouveau solde est \d+\.\d{4} \w{3}\.Cout:\d+.\d{4}\w{3}/i;
 const RX_USER_MONEY_CHECK = /Votre solde disponible est de \d*.\d{4} \w{3}./;
 
 const RX_DUMMY_TEST = /dummy test/;
