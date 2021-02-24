@@ -1,10 +1,14 @@
 const express = require('express');
+const smsModels = require('./sms_models');
 const app = express();
 const port = 8080;
+const ip = require("ip");
 
-var ip = require("ip");
-//console.dir ( 'current ip ' + ip.address() );
+// MODULES IMPORT TEST ------
 
+//console.dir('them models ' + JSON.stringify(smsModels)); //.SMS_MODELS_V1));
+
+// END MODULES IMPORT TEST -----
 
 app.use(express.json());
 
@@ -458,7 +462,7 @@ class SMSParser {
         var data = null;
 
         const smsType = this.getSMSType(sms);
-        console.log('❎current sms type found -> ' + smsType + '❎');
+        console.dir('current sms type found -> ' + smsType );
 
     
         if(smsType === SMSParser.SMS_TYPE.ADMIN_MONEY_SENT){
