@@ -24,11 +24,15 @@ app.post('/parseSMS/', (req, res) => {
 
     
 
-    console.error(sms);
+    console.log(sms);
 
     if(!sms){
-        res.status(418).send({error:true, errorMessage: 'You need to provide an sms!⚠️☢️'});
-    }else{
+        res.status(404).send({error:true, errorMessage: 'You need to provide an sms!⚠️☢️'});
+    }else if (parsedData === SMSParser.SMS_CANT_BE_PARSED){
+        res.status(404).send({error:true, errorMessage: SMSParser.SMS_CANT_BE_PARSED});
+    }
+    
+    else{
         res.status(200)
         .send(
             parsedData
@@ -65,11 +69,22 @@ app.listen(
 
 // SMS PARSING -----
 
-const RX_ADMIN_MONEY_SENT = /Trans. ID: CI200530.1831.D47100 vous avez envoye de 1.0000 USD a 995282840.Votre solde disponible est de 9.0000USD.Cout:0.0000USD/;///Trans. ID: (\w|\d){8}.\d{4}.(\w|\d){6} vous avez envoye de \d*.\d{4} \w{3} a  \d{9}.Votre solde disponible est de \d*.\d{4}\w{3}.Cout:\d*.\d{4}\w{3}/;
+const SMS_MODELS = {
+    ADMIN_MONEY_SENT : "Trans. ID: CI200530.1831.D47100 vous avez envoye de 1.0000 USD a  995282840.Votre solde disponible est de 9.0000USD.Cout:0.0000USD",
+    ADMIN_MONEY_RECEIVED : 'Trans. ID: CO200606.2320.C79855. Vous avez recu 1000.0000 CDF. Venant de 995282840 BOB DITEND. Votre solde disponible est de:  5500.0000 CDF.',
+    ADMIN_MONEY_CHECK : 'Txn. ID : ES200602.1645.C30377. Vous avez actuellement  10.0000  USD disponible sur votre compte courant. Et 0.0170 USD sur votre compte commissions .',
+    USER_MONEY_SENT : '9012|Trans ID: CO200530.1836.A40286. Dear Customer. You have sent USD 1.0000 to 975886099 ALBERT OMBA SHENYEMA. Your available balance is USD 5.2960.',
+    USER_MONEY_RECEIVED : 'Transaction ID: CI200530.1831.D47100:Vous avez recu 1.0000 USD a partir de ALBER908LK, ALBERT OMBA SHENYEMA. votre nouveau solde est 6.4960 USD.Cout:0.0000USD',
+    USER_MONEY_CHECK : 'Votre solde disponible est de 541.3000 CDF.',
+    NO_TYPE : 'NO_TYPE'
+
+}
+
+const RX_ADMIN_MONEY_SENT = /Trans. ID: (\w|\d){8}.\d{4}\.(\w|\d){6} vous avez envoye de \d*.\d{4} USD a  \d{9}.Votre solde disponible est de \d*.0000USD.Cout:0.0000USD/;///Trans. ID: (\w|\d){8}.\d{4}.(\w|\d){6} vous avez envoye de \d*.\d{4} \w{3} a  \d{9}.Votre solde disponible est de \d*.\d{4}\w{3}.Cout:\d*.\d{4}\w{3}/;
 const RX_ADMIN_MONEY_RECEIVED = /Trans. ID: (\w|\d){8}.\d{4}.(\w|\d){6}. Vous avez recu \d*.\d{4} \w{3}. Venant de \d{9} (\w|\s)*. Votre solde disponible est de:  \d*.\d{4} \w{3}./;
 const RX_ADMIN_MONEY_CHECK = /Txn. ID : (\w|\d){8}.\d{4}.(\w|\d){6}. Vous avez actuellement  \d*.\d{4}  \w{3} disponible sur votre compte courant. Et \d*.\d{4} \w{3} sur votre compte commissions ./;
 
-const RX_USER_MONEY_SENT = /\d*\|Trans ID: (\w|\d){8}.\d{4}.(\w|\d){6}. Dear Customer. You have sent \w{3} \d*.\d{4} to \d{9} (\w|\s)*. Your available balance is \w{3} \d*.\d{4}./;
+const RX_USER_MONEY_SENT = /9012|Trans ID: (\w|\d){8}.\d{4}.(\w|\d){6} Customer. You have sent \w{3} \d*.\d{5} to \d{9} (\w|\s)* docta. Your available balance is \w{3} \d*.\d{4}./;///\d*\|Trans ID: (\w|\d){8}.\d{4}.(\w|\d){6}. Dear Customer. You have sent \w{3} \d*.\d{4} to \d{9} (\w|\s)*. Your available balance is \w{3} \d*.\d{4}./;
 const RX_USER_MONEY_RECEIVED = /Transaction ID: (\w|\d){8}.\d{4}.(\w|\d){6}:Vous avez recu \d*.\d{4} \w{3} a partir de (\w|\d){10}, (\w|\s)*. votre nouveau solde est \d*.\d{4} \w{3}.Cout:\d*.\d{4}\w{3}/;
 const RX_USER_MONEY_CHECK = /Votre solde disponible est de \d*.\d{4} \w{3}./;
 
@@ -101,6 +116,8 @@ class SMSParser {
         DUMMY_TYPE : 'DUMMY_TYPE'
 
     };
+
+    static SMS_CANT_BE_PARSED = 'sms cant be parsed';
 
     getSMSType(sms){
 
@@ -176,7 +193,7 @@ class SMSParser {
         //console.log('RX_ADMIN_MONEY_SENT  -> ' + test);
 
         //Transaction ID
-        var regEx = /ID: \w*\d*\.\d{4}\.\w*\d*/i;
+        var regEx = /ID: (\w|\d){8}.\d{4}\.(\w|\d){5}/i;
         var found = sms.match(regEx);
 
         const transID = found[0].replace('ID: ', '');
@@ -190,6 +207,10 @@ class SMSParser {
         const currency = amountAndCurrencyData[1];
 
         
+        //receveiver number
+        regEx = /vous avez envoye de \d*.0000 USD a  \d{9}/i
+        found = sms.match(regEx);
+        const receiverPhone = found[0].replace('vous avez envoye de ' + amount + ' ' + currency + ' a  ','');
 
         //Disponible
         regEx = /disponible est de \d*\.\d*/i;
@@ -198,6 +219,7 @@ class SMSParser {
         
         //parsed data object
         const data = {
+            receiverPhone : receiverPhone,
             transID: transID, 
             amount: amount, 
             currency: currency,
@@ -348,7 +370,7 @@ class SMSParser {
         //balance
         regEx = /Your available balance is \w{3} \d*.\d{4}./i;
         found = sms.match(regEx);
-        const balance = found[0].replace('Your available balance is ', '').replace(currency, '');
+        const balance = found[0].replace('Your available balance is ', '').replace(currency, '').replace(' ', '');
         
         //parsed data object
 
@@ -501,7 +523,7 @@ class SMSParser {
 
         if(data === null){
             
-            return 'sms cant be parsed';
+            return SMSParser.SMS_CANT_BE_PARSED;
         }
         
         
