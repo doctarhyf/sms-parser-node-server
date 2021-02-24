@@ -80,7 +80,7 @@ const SMS_MODELS = {
 
 }
 
-const RX_ADMIN_MONEY_SENT = /Trans. ID: (\w|\d){8}.\d{4}\.(\w|\d){6} vous avez envoye de \d*.\d{4} USD a  \d{9}.Votre solde disponible est de \d*.0000USD.Cout:0.0000USD/;///Trans. ID: (\w|\d){8}.\d{4}.(\w|\d){6} vous avez envoye de \d*.\d{4} \w{3} a  \d{9}.Votre solde disponible est de \d*.\d{4}\w{3}.Cout:\d*.\d{4}\w{3}/;
+const RX_ADMIN_MONEY_SENT = /Trans. ID: (\w|\d){8}.\d{4}\.(\w|\d){6} vous avez envoye de \d*.\d{4} USD a  \d{9}.Votre solde disponible est de \d*.\d{4}\w{3}.Cout:\d*.\d{4}\w{3}/;///Trans. ID: (\w|\d){8}.\d{4}.(\w|\d){6} vous avez envoye de \d*.\d{4} \w{3} a  \d{9}.Votre solde disponible est de \d*.\d{4}\w{3}.Cout:\d*.\d{4}\w{3}/;
 const RX_ADMIN_MONEY_RECEIVED = /Trans. ID: (\w|\d){8}.\d{4}.(\w|\d){6}. Vous avez recu \d*.\d{4} \w{3}. Venant de \d{9} (\w|\s)*. Votre solde disponible est de:  \d*.\d{4} \w{3}./;
 const RX_ADMIN_MONEY_CHECK = /Txn. ID : (\w|\d){8}.\d{4}.(\w|\d){6}. Vous avez actuellement  \d*.\d{4}  \w{3} disponible sur votre compte courant. Et \d*.\d{4} \w{3} sur votre compte commissions ./;
 
