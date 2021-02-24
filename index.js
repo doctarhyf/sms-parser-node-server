@@ -24,7 +24,7 @@ app.post('/parseSMS/', (req, res) => {
 
     
 
-    console.log(sms);
+    console.log(`\n🔥🔥🔥============ SMS DATA TRANSMISSION ==============🔥🔥🔥\n\nSMS Received: "${sms}"\n\n🔥🔥🔥======== END TRANSMISSION =========== 🔥🔥🔥\n`);
 
     if(!sms){
         res.status(404).send({error:true, errorMessage: 'You need to provide an sms!⚠️☢️'});
