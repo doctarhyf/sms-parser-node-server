@@ -24,7 +24,7 @@ app.post('/parseSMS/', (req, res) => {
 
     
 
-    console.log(`\n🔥🔥🔥============ SMS DATA TRANSMISSION ==============🔥🔥🔥\n\nSMS Received: "${sms}"\n\n🔥🔥🔥======== END TRANSMISSION =========== 🔥🔥🔥\n`);
+    console.log(`\n🔥🔥🔥============ SMS DATA TRANSMISSION ==============🔥🔥🔥\n\nSMS Received: \n"${sms}"\n\nat:\n ${new Date().toString()}\n\n🔥🔥🔥======== END TRANSMISSION =========== 🔥🔥🔥\n`);
 
     if(!sms){
         res.status(404).send({error:true, errorMessage: 'You need to provide an sms!⚠️☢️'});
@@ -477,7 +477,7 @@ class SMSParser {
         var data = null;
 
         const smsType = this.getSMSType(sms);
-        console.log('current sms type found -> ' + smsType);
+        console.log('❎current sms type found -> ' + smsType + '❎');
 
     
         if(smsType === SMSParser.SMS_TYPE.ADMIN_MONEY_SENT){
