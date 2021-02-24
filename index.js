@@ -41,7 +41,7 @@ app.post('/parseSMS/', (req, res) => {
 app.listen(
     port,
     () => {
-        console.dir(`It's live on http://${ip.address()}:${port}`);
+        console.dir(`It's live on "http://${ip.address()}:${port}" or "http://localhost:${port}"`);
     }
 );
 
