@@ -3,17 +3,19 @@ const smsModels = require('./sms_models');
 const app = express();
 const port = 8080;
 const ip = require("ip");
+const fs = require('fs').promises;
+const { l, lefire, ldir } = require('./helpers');
+const ipAddress = `http://${ip.address()}:${port}`;
 
-// MODULES IMPORT TEST ------
 
-//console.dir('them models ' + JSON.stringify(smsModels)); //.SMS_MODELS_V1));
 
-// END MODULES IMPORT TEST -----
 
 app.use(express.json());
 
-
-
+app.get('/', (req, res) => {
+    const helloMessage = `Welcome to sms parser\nMake a POST REQUEST to ${ipAddress}.` 
+    res.status(200).send(helloMessage);
+})
 
 
 app.post('/parseSMS/', (req, res) => {
@@ -45,7 +47,11 @@ app.post('/parseSMS/', (req, res) => {
 app.listen(
     port,
     () => {
-        console.dir(`It's live on "http://${ip.address()}:${port}" or "http://localhost:${port}"`);
+
+
+        
+
+        ldir(`It's live on "${ipAddress}" or "http://localhost:${port}"`);
     }
 );
 
